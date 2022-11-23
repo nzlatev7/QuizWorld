@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using QuizMarket.Models.DB;
 using QuizMarket.Models.Request;
+using QuizMarket.Models.Response;
+using QuizWorld.Models.Request;
 
 namespace QuizMarket.Controllers
 {
@@ -9,12 +11,10 @@ namespace QuizMarket.Controllers
 
     public class UserContoller : ControllerBase
     {
-        private IConfiguration _configuration;
         private QuizWorldDbContext _dbContext;
         public UserContoller(QuizWorldDbContext dbContext, IConfiguration configuration)
         {
             _dbContext = dbContext;
-            _configuration = configuration;
         }
         //put, post, get, delete
         //put - update
@@ -64,5 +64,58 @@ namespace QuizMarket.Controllers
 
             return "Ok";
         }
+
+        [HttpDelete]
+        public ActionResult Delete(UserDeleteRequest request)
+        {
+            var userForDlete = _dbContext.Users.Find(request.Id);
+            if (userForDlete == null)
+            {
+                return BadRequest("nqam takowa id");
+            }
+            _dbContext.Users.Remove(userForDlete);
+            _dbContext.SaveChanges();
+            return Ok();
+        }
+
+        [HttpGet]
+        public List<UserGetAllResponce> GetAll()
+        {
+            return _dbContext.Users.Select(x => new UserGetAllResponce()
+            {
+                Id = x.Id,
+                Username = x.Username,
+                Email = x.Email,
+            }).ToList();
+        }
+
+        [HttpPut]
+        public ActionResult Update(UserUpdateRequest request)
+        {
+            var userForUpdate = _dbContext.Users.Any(x => x.Id == request.Id);
+            if (userForUpdate == null)
+            {
+                return BadRequest("can not find");
+            }
+            else
+            {
+                var user = _dbContext.Users.Find(request.Id);
+                if (request.Username != "string")
+                {
+                    user.Username = request.Username;
+                }
+                if (request.Email != "string")
+                {
+                    user.Email = request.Email;
+                }
+                if (request.Password != "string")
+                {
+                    user.Password = request.Password;
+                }
+                _dbContext.SaveChanges();
+                return Ok();
+            }
+        }
+
     }
 }
