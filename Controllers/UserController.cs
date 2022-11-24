@@ -1,8 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using QuizMarket.Models.DB;
 using QuizMarket.Models.Request;
 using QuizMarket.Models.Response;
 using QuizWorld.Models.Request;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace QuizMarket.Controllers
 {
@@ -11,10 +15,12 @@ namespace QuizMarket.Controllers
 
     public class UserContoller : ControllerBase
     {
+        private IConfiguration _configuration;
         private QuizWorldDbContext _dbContext;
         public UserContoller(QuizWorldDbContext dbContext, IConfiguration configuration)
         {
             _dbContext = dbContext;
+            _configuration = configuration;
         }
         //put, post, get, delete
         //put - update
@@ -62,7 +68,21 @@ namespace QuizMarket.Controllers
                 return "invalid information";
             }
 
-            return "Ok";
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var tokenKey = Encoding.UTF8.GetBytes(_configuration["JWT:Key"]);
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new Claim[]
+              {
+                  new Claim(ClaimTypes.Name, user.Id.ToString())
+              }),
+                Expires = DateTime.UtcNow.AddMinutes(10),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(tokenKey), SecurityAlgorithms.HmacSha256Signature),
+                Issuer = _configuration["Jwt:Issuer"],
+                Audience = _configuration["Jwt:Audience"]
+            };
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
         }
 
         [HttpDelete]
