@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using QuizMarket.Models.DB;
 using QuizMarket.Models.Request;
@@ -10,6 +11,7 @@ using System.Text;
 
 namespace QuizMarket.Controllers
 {
+    [Authorize(Roles = "User")]
     [ApiController]
     [Route("[controller]/[action]")]
 
@@ -31,6 +33,7 @@ namespace QuizMarket.Controllers
         //linq - any - returns bool
         //     - where - returns list
         //     - select - returns collection(from one type to another type)
+        [AllowAnonymous]
         [HttpPost]
         public ActionResult Register(UserRegisterRequest request)
         {
@@ -53,12 +56,14 @@ namespace QuizMarket.Controllers
                 Username = request.Username,
                 Password = request.Password,
                 Email = request.Email,
+                Role = request.Role,
             };
             _dbContext.Users.Add(userToAdd);
             _dbContext.SaveChanges();
             return Ok();
         }
 
+        [AllowAnonymous]
         [HttpPost]
         public string Login(UserLoginRequest request)
         {
@@ -74,7 +79,8 @@ namespace QuizMarket.Controllers
             {
                 Subject = new ClaimsIdentity(new Claim[]
               {
-                  new Claim(ClaimTypes.Name, user.Id.ToString())
+                  new Claim(ClaimTypes.Name, user.Id.ToString()),
+                  new Claim(ClaimTypes.Role, user.Role.ToString())
               }),
                 Expires = DateTime.UtcNow.AddMinutes(10),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(tokenKey), SecurityAlgorithms.HmacSha256Signature),
@@ -88,12 +94,12 @@ namespace QuizMarket.Controllers
         [HttpDelete]
         public ActionResult Delete(UserDeleteRequest request)
         {
-            var userForDlete = _dbContext.Users.Find(request.Id);
-            if (userForDlete == null)
+            var userForDelete = _dbContext.Users.Find(request.Id);
+            if (userForDelete == null)
             {
                 return BadRequest("nqam takowa id");
             }
-            _dbContext.Users.Remove(userForDlete);
+            _dbContext.Users.Remove(userForDelete);
             _dbContext.SaveChanges();
             return Ok();
         }
@@ -112,7 +118,7 @@ namespace QuizMarket.Controllers
         [HttpPut]
         public ActionResult Update(UserUpdateRequest request)
         {
-            var userForUpdate = _dbContext.Users.Any(x => x.Id == request.Id);
+            var userForUpdate = _dbContext.Users.FirstOrDefault(x => x.Id == request.Id);
             if (userForUpdate == null)
             {
                 return BadRequest("can not find");
@@ -124,14 +130,14 @@ namespace QuizMarket.Controllers
                 {
                     user.Username = request.Username;
                 }
-                if (request.Email != "string")
+                if (request.Username != "string")
                 {
                     user.Email = request.Email;
                 }
-                if (request.Password != "string")
+                if (request.Username != "string")
                 {
                     user.Password = request.Password;
-                }
+                } 
                 _dbContext.SaveChanges();
                 return Ok();
             }
