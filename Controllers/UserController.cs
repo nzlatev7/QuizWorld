@@ -11,7 +11,7 @@ using System.Text;
 
 namespace QuizMarket.Controllers
 {
-    [Authorize(Roles = "User")]
+    //[Authorize(Roles = "User")]
     [ApiController]
     [Route("[controller]/[action]")]
 
@@ -56,14 +56,14 @@ namespace QuizMarket.Controllers
                 Username = request.Username,
                 Password = request.Password,
                 Email = request.Email,
-                Role = request.Role,
+                Role = "User",
             };
             _dbContext.Users.Add(userToAdd);
             _dbContext.SaveChanges();
             return Ok();
         }
 
-        [AllowAnonymous]
+        //[AllowAnonymous]
         [HttpPost]
         public string Login(UserLoginRequest request)
         {
@@ -94,6 +94,7 @@ namespace QuizMarket.Controllers
         [HttpDelete]
         public ActionResult Delete(UserDeleteRequest request)
         {
+            //ako idto na users jwt token = s towa na request idto
             var userForDelete = _dbContext.Users.Find(request.Id);
             if (userForDelete == null)
             {
