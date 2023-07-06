@@ -1,0 +1,18 @@
+$menuBg: rgb(163, 163, 163);
+.menuContainer{
+    width: 250px;
+    background-color: $menuBg;
+    height: calc(100vh - 71px);
+}
+li{
+    list-style-type: none;
+    padding: 20px;
+}
+li:hover{
+    background-color: cadetblue;
+}
+.activate{
+    color: wheat;
+    background-color: rgb(116, 116, 116);
+    border-left: 3px solid red;
+}

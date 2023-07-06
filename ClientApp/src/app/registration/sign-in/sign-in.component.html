@@ -1,0 +1,21 @@
+<div class="container main">
+    <div class="row">
+        <div class="col">
+            <form [formGroup]="form" (ngSubmit)="onSubmit()">
+                <label for="username">Username</label><br>
+                <input type="text"
+                       class="form-control"
+                       id="username"
+                       formControlName="username">
+                       <br>
+                <label for="password">Password</label><br>
+                <input type="text" 
+                       id="password"
+                       class="form-control"
+                       formControlName="password">
+                       <br>
+                <input type="submit" class="btn btn-secondary">
+            </form>
+        </div>
+    </div>
+</div>

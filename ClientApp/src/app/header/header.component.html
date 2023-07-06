@@ -1,0 +1,10 @@
+<nav class="navbar navbar-expand-lg bg-secondary">
+    <div class="container-fluid">
+        <a class="navbar-brand" style="font-size: 30px; user-select: none;">Quiz World</a>
+        <div>
+            <button *ngIf="!islogged" class="btn btn-outline-light me-2" routerLink="signUp">Sign up</button>
+            <button *ngIf="!islogged" class="btn btn-outline-light" routerLink="signIn">Sign in</button>
+            <button *ngIf="islogged" class="btn btn-outline-danger" (click)="logOut()">Log out</button>
+        </div>
+    </div>
+</nav>
