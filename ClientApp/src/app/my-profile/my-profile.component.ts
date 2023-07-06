@@ -16,9 +16,14 @@ export class MyProfileComponent implements OnInit {
   users: any = [];
 
   getUsers() {
-    this.user.getAll().subscribe({
-      next: (resp) => {console.log(resp);this.users=resp},
-      error: (eror) => console.error(eror)
-    })
+    const token = localStorage.getItem('token');
+    if (token) {
+      this.user.getAll().subscribe({
+        next: (resp) => { console.log(resp); this.users = resp },
+        error: (eror) => console.error(eror)
+      })
+    } else {
+      alert("Log in");
+    }
   }
 }
