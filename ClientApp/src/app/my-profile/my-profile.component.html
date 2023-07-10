@@ -6,14 +6,17 @@
         </div>
     </div>
     <div class="row mt-2" *ngFor="let user of users">
-        <div class="col-4">
+        <div class="col-3">
             {{user.id}}
         </div>
-        <div class="col-4">
+        <div class="col-3">
             {{user.username}}
         </div>
-        <div class="col-4">
+        <div class="col-3">
             {{user.email}}
+        </div>
+        <div class="col-3">
+            {{user.role}}
         </div>
     </div>
 </div>

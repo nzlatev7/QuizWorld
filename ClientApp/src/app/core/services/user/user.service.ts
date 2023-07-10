@@ -1,3 +1,4 @@
+import { JsonPipe } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
@@ -21,7 +22,14 @@ export class UserService {
   }
 
   getAll(){
-    return this.http.get(`${this.url}/UserContoller/GetAll`);
+    let token = localStorage.getItem("token");
+    if (token) {
+      token = JSON.parse(token);      
+    }
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+    return this.http.get(`${this.url}/UserContoller/GetAll`,{headers});
   }
 
   delete(body: any){

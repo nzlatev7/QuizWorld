@@ -106,6 +106,7 @@ namespace QuizMarket.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "admin")]
         public List<UserGetAllResponce> GetAll()
         {
             return _dbContext.Users.Select(x => new UserGetAllResponce()
@@ -113,6 +114,7 @@ namespace QuizMarket.Controllers
                 Id = x.Id,
                 Username = x.Username,
                 Email = x.Email,
+                Role = x.Role
             }).ToList();
         }
 
