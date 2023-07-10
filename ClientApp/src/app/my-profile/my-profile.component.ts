@@ -26,4 +26,15 @@ export class MyProfileComponent implements OnInit {
       alert("Log in");
     }
   }
+
+  deleteUser(id: number):void {
+    const body = {
+      "id": id
+    }
+    console.log(body)
+    this.user.delete(body).subscribe({
+      next: resp => {console.log(resp); this.getUsers()},
+      error: err => console.log(err)
+    })
+  }
 }

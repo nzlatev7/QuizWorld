@@ -33,6 +33,9 @@ export class UserService {
   }
 
   delete(body: any){
-    return this.http.delete(`${this.url}/UserContoller/Delete`, body);
+    const headers = new HttpHeaders({
+      'Accept': 'application/json'
+    });
+    return this.http.delete(`${this.url}/UserContoller/Delete`, {body,headers});
   }
 }

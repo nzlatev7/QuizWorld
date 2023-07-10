@@ -15,8 +15,9 @@
         <div class="col-3">
             {{user.email}}
         </div>
-        <div class="col-3">
+        <div class="col-3 delete">
             {{user.role}}
+            <button class=" btn btn-danger" (click)="deleteUser(user.id)">Delete</button>
         </div>
     </div>
 </div>
